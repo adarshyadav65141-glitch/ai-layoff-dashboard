@@ -1,0 +1,11 @@
+company,industry,total_laid_off,year,ai_adopted
+Oracle,Tech,5000,2024,Yes
+Google,Tech,12000,2023,Yes
+Microsoft,Tech,10000,2023,Yes
+Amazon,Tech,18000,2023,Yes
+StartupX,Finance,200,2022,No
+FinCorp,Finance,1500,2023,No
+HealthPlus,Healthcare,800,2024,Yes
+EduSmart,Education,300,2022,No
+RetailHub,Retail,2500,2023,Yes
+AutoDrive,Automobile,1200,2024,Yes
