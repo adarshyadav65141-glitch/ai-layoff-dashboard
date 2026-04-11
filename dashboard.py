@@ -50,10 +50,11 @@ if "page" not in st.session_state:
 
 
 # 🔥 DATABASE FUNCTION (TOP पर)
-# @st.cache_data
-conn = sqlite3.connect("data.db",
-check_same_thread=False)
-df = pd.read_sql_query("SELECT * FROM layoffs", conn)
+@st.cache_data
+def get_data():
+    conn = sqlite3.connect("data.db", check_same_thread=False)
+    df = pd.read_sql_query("SELECT * FROM layoffs", conn)
+    return df
     
 # 🔥 DASHBOARD FUNCTION
 def show_dashboard():
@@ -108,7 +109,7 @@ def show_dashboard():
     """, unsafe_allow_html=True)
 
     # 🔥 DATA LOAD
-    # df = get_data()
+    df = get_data()
 
     # 🔄 REFRESH
     if st.button("🔄 Refresh Data"):
