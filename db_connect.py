@@ -5,7 +5,7 @@ import os
 load_dotenv()
 
 conn=sqlite3.connect("data.db",
-childProcessError=False)
+check_same_thread=False)
 cursor=conn.cursor()
 cursor.execute("SELECT COUNT(*) FROM layoffs")
 count = cursor.fetchone()[0]

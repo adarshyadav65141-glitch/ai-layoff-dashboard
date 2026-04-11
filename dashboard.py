@@ -53,7 +53,7 @@ if "page" not in st.session_state:
 # @st.cache_data
 conn = sqlite3.connect("data.db",
 check_same_thread=False)
-df = pd.read_sql("SELECT * FROM layoffs", conn)
+df = pd.read_sql_query("SELECT * FROM layoffs", conn)
     
 
 
