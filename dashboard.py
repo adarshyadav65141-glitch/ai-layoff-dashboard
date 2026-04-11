@@ -55,8 +55,6 @@ conn = sqlite3.connect("data.db",
 check_same_thread=False)
 df = pd.read_sql_query("SELECT * FROM layoffs", conn)
     
-
-
 # 🔥 DASHBOARD FUNCTION
 def show_dashboard():
 
