@@ -1,5 +1,5 @@
 streamlit
 pandas
-pymysql
+sqlite3
 plotly
 python-dotenv

@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import os
 import streamlit as st
 import pandas as pd
-import pymysql
+import sqlite3
 import plotly.express as px
 from auth import login_register
 
@@ -50,16 +50,11 @@ if "page" not in st.session_state:
 
 
 # 🔥 DATABASE FUNCTION (TOP पर)
-@st.cache_data
-def get_data():
-    conn = pymysql.connect(
-        host="127.0.0.1",
-        user="root",
-        password="2003",
-        database="layoffs_db"
-    )
-    df = pd.read_sql("SELECT * FROM layoffs", conn)
-    return df
+# @st.cache_data
+conn = sqlite3.connect("data.db",
+check_same_thread=False)
+df = pd.read_sql("SELECT * FROM layoffs", conn)
+    
 
 
 # 🔥 DASHBOARD FUNCTION
@@ -115,7 +110,7 @@ def show_dashboard():
     """, unsafe_allow_html=True)
 
     # 🔥 DATA LOAD
-    df = get_data()
+    # df = get_data()
 
     # 🔄 REFRESH
     if st.button("🔄 Refresh Data"):

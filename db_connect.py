@@ -1,14 +1,14 @@
-import pymysql
+import sqlite3
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
-def get_connection():
-    return pymysql.connect(
-        host=os.getenv("DB_HOST"),
-        user=os.getenv("DB_USER"),
-        password=os.getenv("DB_PASSWORD"),
-        database=os.getenv("DB_NAME"),
-        port=3306
-    )
+conn=sqlite3.connect("data.db",
+childProcessError=False)
+cursor=conn.cursor()
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS users(
+id INTEGER PRIMARY KEY AUTOINCREMENT,username TEXT UNIQUE,password TEXT)
+""")
+conn.commit()

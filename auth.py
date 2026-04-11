@@ -1,16 +1,10 @@
 from dotenv import load_dotenv
 import os
 import streamlit as st
-import pymysql
+import sqlite3
 
 # 🔥 DB connection
-conn = pymysql.connect(
-    host="localhost",
-    user="root",
-    password="2003",
-    database="layoffs_db"
-)
-
+conn = sqlite3.connect("data.db")
 cursor = conn.cursor()
 
 def login_register():
