@@ -52,7 +52,7 @@ if "page" not in st.session_state:
 # 🔥 DATABASE FUNCTION (TOP पर)
 @st.cache_data
 def get_data():
-    conn = sqlite3.connect("data.db", check_same_thread=False)
+    conn = sqlite3.connect("layoffs.db", check_same_thread=False)
     df = pd.read_sql_query("SELECT * FROM layoffs", conn)
     return df
     
