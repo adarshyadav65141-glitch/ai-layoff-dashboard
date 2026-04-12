@@ -181,9 +181,29 @@ def show_dashboard():
     # 🎯 SIDEBAR FILTERS
     st.sidebar.header("🔍 Filters")
 
-    year = st.sidebar.multiselect("Year", df['year'].unique(), default=df['year'].unique())
-    industry = st.sidebar.multiselect("Industry", df['industry'].unique(), default=df['industry'].unique())
-    ai = st.sidebar.multiselect("AI Adopted", df['ai_adopted'].unique(), default=df['ai_adopted'].unique())
+    year_options = ["All"] + sorted(df['year'].unique().tolist())
+    selected_year = st.sidebar.multiselect("Year", year_options, default=["All"])
+
+    if "All" in selected_year:
+        year = df['year'].unique()
+    else:
+       year = selected_year
+
+    industry_options = ["All"] + sorted(df['industry'].unique().tolist())
+    selected_industry = st.sidebar.multiselect("Industry", industry_options, default=["All"])
+
+    if "All" in selected_industry:
+        industry = df['industry'].unique()
+    else:
+        industry = selected_industry
+
+    ai_options = ["All"] + df['ai_adopted'].unique().tolist()
+    selected_ai = st.sidebar.multiselect("AI Adopted", ai_options, default=["All"])
+
+    if "All" in selected_ai:
+        ai = df['ai_adopted'].unique()
+    else:
+        ai = selected_ai
 
     search = st.sidebar.text_input("🔎 Search Company")
 
