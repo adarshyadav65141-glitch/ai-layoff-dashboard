@@ -1,23 +1,26 @@
 import sqlite3
 import pandas as pd
+import pymysql
 
-# 👉 dummy data (तुम बाद में real डाल सकते हो)
-data = {
-    "company": ["Google", "Amazon", "Microsoft"],
-    "year": [2023, 2023, 2022],
-    "total_laid_off": [12000, 10000, 8000],
-    "industry": ["Tech", "Tech", "Tech"],
-    "ai_adopted": ["Yes", "No", "Yes"],
-    "reason": ["AI Automation", "Cost Cutting", "Restructuring"]
-}
+# 👉 MySQL connection (तुम्हारा original DB)
+conn_mysql = pymysql.connect(
+    host="localhost",
+    user="root",
+    password="2003",
+    database="layoffs_db"
+)
 
-df = pd.DataFrame(data)
+# 👉 MySQL से data fetch
+df = pd.read_sql("SELECT * FROM layoffs", conn_mysql)
 
-conn = sqlite3.connect("data.db")
+print("✅ MySQL Data Loaded:", len(df))
 
-# 🔥 layoffs table create + data insert
-df.to_sql("layoffs", conn, if_exists="replace", index=False)
+# 👉 SQLite DB बनाओ (cloud के लिए)
+conn_sqlite = sqlite3.connect("layoffs.db")
 
-conn.close()
+# 👉 Table बनाओ
+df.to_sql("layoffs", conn_sqlite, if_exists="replace", index=False)
 
-print("✅ layoffs table created")
+conn_sqlite.close()
+
+print("✅ SQLite DB Created with REAL DATA")
