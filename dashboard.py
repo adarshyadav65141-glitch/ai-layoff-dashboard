@@ -32,6 +32,9 @@ div.stButton > button {
     padding: 8px 16px;
     transition: 0.3s;
 }
+ p, span {
+        color: #e5e7eb !important;
+    }
 
 div.stButton > button:hover {
     background-color: #1D4ED8;
@@ -88,7 +91,7 @@ if "page" not in st.session_state:
 
 
 # 🔥 DATABASE FUNCTION (TOP पर)
-@st.cache_data
+@st.cache_data(ttl=60)
 def get_data():
     conn = sqlite3.connect("layoffs.db", check_same_thread=False)
     df = pd.read_sql_query("SELECT * FROM layoffs", conn)
@@ -146,17 +149,14 @@ def show_dashboard():
     </style>
     """, unsafe_allow_html=True)
 
-    # 🔥 DATA LOAD
-    df = get_data()
+    # 🔥 DATA LOAD new
+    with st.spinner("Loading data..."):
+      df = get_data()
 
     # 🔄 REFRESH
     if st.button("🔄 Refresh Data"):
         st.cache_data.clear()
         st.rerun()
-    # loading ######
-    with st.spinner("Loading..."):
-        df=get_data()
-    st.success("live Data Loaded Successfully")
 
     # 🚀 TITLE
     st.markdown(
@@ -225,13 +225,7 @@ def show_dashboard():
         fig1 = px.line(year_data, x='year', y='total_laid_off', markers=True)
         fig1.update_layout(template="plotly_dark", paper_bgcolor="rgba(0,0,0,0)")
         st.plotly_chart(fig1, use_container_width=True)
-        fig1.update_layout(
-        template="plotly_dark",
-        title_font=dict(size=20),
-        xaxis_title="Year",
-        yaxis_title="Layoffs"
-        )
-
+    
     with col5:
         st.subheader("🤖 AI vs Non-AI")
         ai_data = filtered_df.groupby('ai_adopted')['total_laid_off'].sum().reset_index()
