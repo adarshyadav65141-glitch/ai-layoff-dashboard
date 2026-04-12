@@ -8,7 +8,7 @@ from auth import login_register
 
 # 🔥 PAGE CONFIG (TOP पर ही होना चाहिए)
 st.set_page_config(page_title="AI Layoff Dashboard", layout="wide")
-st.success("✅ Live Data Loaded Successfully")
+
 st.markdown("""
 <style>
 /* पूरा background */
