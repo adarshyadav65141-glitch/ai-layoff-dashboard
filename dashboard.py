@@ -126,13 +126,18 @@ def show_dashboard():
     p, span {
         color: #e5e7eb !important;
     }
+                
+    /* Download Button */
+    div.stDownloadButton > button {
+    background-color: green;
+    color: white;
+    border-radius: 8px;
+    }
+
+   div.stDownloadButton > button:hover {
+    background-color: darkgreen;
+   }
             
-    /* Buttons */
-        .stButton>button {
-        background-color: #2563EB;
-        color: white;
-        border-radius: 8px;
-        }
     div[data-testid="metric-container"] {
         background: rgba(255, 255, 255, 0.1);
         border: 1px solid rgba(255,255,255,0.2);
