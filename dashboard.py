@@ -177,7 +177,6 @@ def show_dashboard():
     </p>
     """, unsafe_allow_html=True)
 
-
     # 🎯 SIDEBAR FILTERS
     st.sidebar.header("🔍 Filters")
 
@@ -189,11 +188,11 @@ def show_dashboard():
     else:
        year = selected_year
 
-    industry_options = ["SelectAll"] + sorted(df['industry'].unique().tolist())
+    industry_options = ["SelectAll"] + sorted(df['industry'].str.strip().unique().tolist())
     selected_industry = st.sidebar.multiselect("Industry", industry_options, default=["SelectAll"])
 
     if "SelectAll" in selected_industry:
-        industry = df['industry'].unique()
+        industry = df['industry'].str.strip().unique()
     else:
         industry = selected_industry
 
@@ -210,7 +209,7 @@ def show_dashboard():
     # 🎯 FILTER LOGIC
     filtered_df = df[
         (df['year'].isin(year)) &
-        (df['industry'].isin(industry)) &
+        (df['industry'].str.strip().isin(industry)) &
         (df['ai_adopted'].isin(ai))
     ]
 
