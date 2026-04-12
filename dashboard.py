@@ -6,9 +6,11 @@ import sqlite3
 import plotly.express as px
 from auth import login_register
 
+load_dotenv()
+
 # 🔥 PAGE CONFIG (TOP पर ही होना चाहिए)
 st.set_page_config(page_title="AI Layoff Dashboard", layout="wide")
-
+#
 st.markdown("""
 <style>
 /* पूरा background */
@@ -151,10 +153,12 @@ def show_dashboard():
     if st.button("🔄 Refresh Data"):
         st.cache_data.clear()
         st.rerun()
+    # loading ######
+    with st.spinner("Loading..."):
+        df=get_data()
+    st.success("live Data Loaded Successfully")
 
     # 🚀 TITLE
-
-    # 
     st.markdown(
     "<h1 style='text-align: center; animation: fadeIn 2s;'>🚀 AI Layoff Dashboard</h1>",
     unsafe_allow_html=True
@@ -226,7 +230,7 @@ def show_dashboard():
         title_font=dict(size=20),
         xaxis_title="Year",
         yaxis_title="Layoffs"
-)
+        )
 
     with col5:
         st.subheader("🤖 AI vs Non-AI")
@@ -248,7 +252,7 @@ def show_dashboard():
     # 🏆 TOP
     st.subheader("🏆 Top Companies")
     top_companies = filtered_df.sort_values(by='total_laid_off', ascending=False).head(5)
-    st.dataframe(top_companies.style.highlight_max(axis=0))
+    st.dataframe(top_companies,use_container_width=True) #
 
     # 🧠 REASON
     if 'reason' in filtered_df.columns:
@@ -266,9 +270,7 @@ def show_dashboard():
         data=filtered_df.to_csv(index=False),
         file_name="layoffs_data.csv",
         mime="text/csv"
-    )
-    with st.spinner("Loading data..."):
-       df = get_data()
+        )
 
     # ❤️ FOOTER
     st.markdown("""
@@ -283,5 +285,3 @@ if st.session_state.page == "login":
 
 elif st.session_state.page == "dashboard":
     show_dashboard()
-
-load_dotenv()
