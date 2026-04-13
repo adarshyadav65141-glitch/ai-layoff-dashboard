@@ -11,13 +11,9 @@ load_dotenv()
 
 # 🔥 PAGE CONFIG (TOP पर ही होना चाहिए)
 st.set_page_config(page_title="AI Layoff Dashboard", layout="wide")
+
 st.markdown("""
 <style>
-div.stadd_dataButton > button {
-    background-color: green;
-    color: white;
-    border-radius: 8px;
-}
 
 /* 🔥 Hover */
 button:hover {
