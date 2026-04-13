@@ -5,12 +5,29 @@ import pandas as pd
 import sqlite3
 import plotly.express as px
 from auth import login_register
+import db_connect
 
 load_dotenv()
 
 # 🔥 PAGE CONFIG (TOP पर ही होना चाहिए)
 st.set_page_config(page_title="AI Layoff Dashboard", layout="wide")
-#
+st.markdown("""
+<style>
+div.stadd_dataButton > button {
+    background-color: green;
+    color: white;
+    border-radius: 8px;
+}
+
+/* 🔥 Hover */
+button:hover {
+    background-color: red !important;
+    color: white !important;
+}
+
+</style>
+""", unsafe_allow_html=True)
+# 
 st.markdown("""
 <style>
 /* पूरा background */
@@ -163,56 +180,60 @@ def show_dashboard():
         st.cache_data.clear()
         st.rerun()
 
-    # 🚀 TITLE
-    st.markdown(
-    "<h1 style='text-align: center; animation: fadeIn 2s;'>🚀 AI Layoff Dashboard</h1>",
-    unsafe_allow_html=True
-    )
-    st.markdown("""
-    <h1 style='text-align: center; font-size: 50px;'>
-    🚀 AI Layoff Intelligence Dashboard
-    </h1>
-    <p style='text-align: center; color: lightgray;'>
-    Real-time Insights | Interactive Analytics | Smart Filtering
-    </p>
-    """, unsafe_allow_html=True)
-
-    # 🎯 SIDEBAR FILTERS
+     # 🎯 SIDEBAR FILTERS
     st.sidebar.header("🔍 Filters")
 
-    year_options = ["SelectAll"] + sorted(df['year'].unique().tolist())
-    selected_year = st.sidebar.multiselect("Year", year_options, default=["SelectAll"])
+    # ✅ CLEAN DATA
+    df['year'] = df['year'].astype(str).str.strip()
+    df['industry'] = df['industry'].astype(str).str.strip()
+    df['ai_adopted'] = df['ai_adopted'].astype(str).str.strip()
 
-    if "SelectAll" in selected_year:
-        year = df['year'].unique()
-    else:
-       year = selected_year
 
-    industry_options = ["SelectAll"] + sorted(df['industry'].str.strip().unique().tolist())
-    selected_industry = st.sidebar.multiselect("Industry", industry_options, default=["SelectAll"])
+    # ✅ YEAR FILTER (NO SelectAll in list 🔥)
+    year_values = sorted(df['year'].dropna().unique().tolist())
 
-    if "SelectAll" in selected_industry:
-        industry = df['industry'].str.strip().unique()
-    else:
-        industry = selected_industry
+    selected_year = st.sidebar.multiselect(
+        "Year",
+        options=year_values,
+        default=year_values   # 👈 ALL selected by default
+    )
 
-    ai_options = ["SelectAll"] + df['ai_adopted'].unique().tolist()
-    selected_ai = st.sidebar.multiselect("AI Adopted", ai_options, default=["SelectAll"])
+    year = selected_year
 
-    if "SelectAll" in selected_ai:
-        ai = df['ai_adopted'].unique()
-    else:
-        ai = selected_ai
+
+    # ✅ INDUSTRY FILTER
+    industry_values = sorted(df['industry'].dropna().unique().tolist())
+
+    selected_industry = st.sidebar.multiselect(
+        "Industry",
+        options=industry_values,
+        default=industry_values
+    )
+
+    industry = selected_industry
+
+
+    # ✅ AI FILTER
+    ai_values = sorted(df['ai_adopted'].dropna().unique().tolist())
+
+    selected_ai = st.sidebar.multiselect(
+        "AI Adopted",
+        options=ai_values,
+        default=ai_values
+    )
+
+    ai = selected_ai
+
 
     search = st.sidebar.text_input("🔎 Search Company")
+
 
     # 🎯 FILTER LOGIC
     filtered_df = df[
         (df['year'].isin(year)) &
-        (df['industry'].str.strip().isin(industry)) &
+        (df['industry'].isin(industry)) &
         (df['ai_adopted'].isin(ai))
-    ]
-
+      ]
     if search:
         filtered_df = filtered_df[
             filtered_df['company'].str.lower().str.strip().str.contains(search.lower().strip())
@@ -271,7 +292,7 @@ def show_dashboard():
     st.subheader("🏆 Top Companies")
     top_companies = filtered_df.sort_values(by='total_laid_off', ascending=False).head(5)
     st.dataframe(top_companies,use_container_width=True) #
-
+    
     # 🧠 REASON
     if 'reason' in filtered_df.columns:
         st.subheader("🧠 Layoff Reasons")
@@ -281,7 +302,7 @@ def show_dashboard():
     fig4 = px.bar(top_companies, x='company', y='total_laid_off', color='company')
     fig4.update_layout(template="plotly_dark")
     st.plotly_chart(fig4, use_container_width=True)
-
+    
     # 📥 DOWNLOAD
     st.download_button(
         label="📥 Download Data",
@@ -289,7 +310,7 @@ def show_dashboard():
         file_name="layoffs_data.csv",
         mime="text/csv"
         )
-
+    
     # ❤️ FOOTER
     st.markdown("""
     <hr>
