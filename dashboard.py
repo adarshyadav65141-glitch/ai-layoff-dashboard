@@ -178,11 +178,11 @@ def show_dashboard():
     def multi_select_with_all(label, options):
         selected = st.sidebar.multiselect(
             label,
-            options=["All"] + options,
-            default=["All"]
+            options=["AllSelect"] + options,
+            default=["AllSelectl"]
         )
         
-        if "All" in selected:
+        if "AllSelect" in selected:
             return options
         return selected
 
