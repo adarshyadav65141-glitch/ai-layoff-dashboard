@@ -11,18 +11,6 @@ load_dotenv()
 
 # 🔥 PAGE CONFIG (TOP पर ही होना चाहिए)
 st.set_page_config(page_title="AI Layoff Dashboard", layout="wide")
-
-st.markdown("""
-<style>
-
-/* 🔥 Hover */
-button:hover {
-    background-color: red !important;
-    color: white !important;
-}
-
-</style>
-""", unsafe_allow_html=True)
 # 
 st.markdown("""
 <style>
@@ -112,6 +100,8 @@ def get_data():
     
 # 🔥 DASHBOARD FUNCTION
 def show_dashboard():
+    st.markdown("<h1 style='text-align:center;'>🚀 AI Layoff Dashboard</h1>", unsafe_allow_html=True)
+    st.markdown("---")
 
     # 👉 Logout button
     if st.button("Logout"):
@@ -176,7 +166,7 @@ def show_dashboard():
         st.cache_data.clear()
         st.rerun()
 
-     # 🎯 SIDEBAR FILTERS
+    # 🎯 SIDEBAR FILTERS
     st.sidebar.header("🔍 Filters")
 
     # ✅ CLEAN DATA
@@ -184,45 +174,32 @@ def show_dashboard():
     df['industry'] = df['industry'].astype(str).str.strip()
     df['ai_adopted'] = df['ai_adopted'].astype(str).str.strip()
 
+    # 🔹 Helper function (NEW)
+    def multi_select_with_all(label, options):
+        selected = st.sidebar.multiselect(
+            label,
+            options=["All"] + options,
+            default=["All"]
+        )
+        
+        if "All" in selected:
+            return options
+        return selected
 
-    # ✅ YEAR FILTER (NO SelectAll in list 🔥)
+    # ✅ YEAR FILTER
     year_values = sorted(df['year'].dropna().unique().tolist())
-
-    selected_year = st.sidebar.multiselect(
-        "Year",
-        options=year_values,
-        default=year_values   # 👈 ALL selected by default
-    )
-
-    year = selected_year
-
+    year = multi_select_with_all("📅 Year", year_values)
 
     # ✅ INDUSTRY FILTER
     industry_values = sorted(df['industry'].dropna().unique().tolist())
-
-    selected_industry = st.sidebar.multiselect(
-        "Industry",
-        options=industry_values,
-        default=industry_values
-    )
-
-    industry = selected_industry
-
+    industry = multi_select_with_all("🏭 Industry", industry_values)
 
     # ✅ AI FILTER
     ai_values = sorted(df['ai_adopted'].dropna().unique().tolist())
+    ai = multi_select_with_all("🤖 AI Adopted", ai_values)
 
-    selected_ai = st.sidebar.multiselect(
-        "AI Adopted",
-        options=ai_values,
-        default=ai_values
-    )
-
-    ai = selected_ai
-
-
-    search = st.sidebar.text_input("🔎 Search Company")
-
+    # 🔍 SEARCH (IMPROVED)
+    search = st.sidebar.text_input("🔎 Search Company", placeholder="Type company name...")
 
     # 🎯 FILTER LOGIC
     filtered_df = df[
